@@ -7,31 +7,44 @@ void swap(int *a, int *b) {
     *b = temp;
 }
 
-// Fonction de partitionnement : place le pivot à la bonne position
+// Fonction de partitionnement : place les éléments inférieurs au pivot à gauche et les éléments supérieurs à droite
 int partition(int arr[], int low, int high) {
-    int pivot = arr[high];  // Choisir le dernier élément comme pivot
-    int i = (low - 1);      // Index du plus petit élément
+    int pivot = arr[low];  // Choisir le premier élément comme pivot
+    int left = low + 1;    // Pointeur pour parcourir la partie gauche
+    int right = high;      // Pointeur pour parcourir la partie droite
     
-    for (int j = low; j <= high - 1; j++) {
-        if (arr[j] < pivot) {
-            i++;  // Incrémenter l'index du plus petit élément
-            swap(&arr[i], &arr[j]);
+    // Tant que les deux pointeurs ne se croisent pas
+    while (left <= right) {
+        // Avancer le pointeur gauche tant que les éléments sont plus petits que le pivot
+        while (left <= right && arr[left] <= pivot) {
+            left++;
+        }
+        
+        // Avancer le pointeur droit tant que les éléments sont plus grands que le pivot
+        while (left <= right && arr[right] > pivot) {
+            right--;
+        }
+        
+        // Si les deux pointeurs ne se sont pas croisés, échanger les éléments
+        if (left < right) {
+            swap(&arr[left], &arr[right]);
         }
     }
-    // Placer le pivot à sa place correcte
-    swap(&arr[i + 1], &arr[high]);
-    return (i + 1);
+    
+    // Placer le pivot à sa position correcte (à la place du pointeur "right")
+    swap(&arr[low], &arr[right]);
+    return right;  // Retourner l'indice du pivot
 }
 
 // Fonction récursive pour effectuer le tri rapide
 void quickSort(int arr[], int low, int high) {
     if (low < high) {
-        // Pi est l'index du pivot
-        int pi = partition(arr, low, high);
+        // Obtenir l'index du pivot après partitionnement
+        int pivotIndex = partition(arr, low, high);
         
-        // Trier récursivement les sous-tableaux à gauche et à droite du pivot
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
+        // Trier récursivement les sous-tableaux
+        quickSort(arr, low, pivotIndex - 1);  // Partie gauche du pivot
+        quickSort(arr, pivotIndex + 1, high); // Partie droite du pivot
     }
 }
 
@@ -67,3 +80,4 @@ int main() {
     
     return 0;
 }
+
